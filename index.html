@@ -1,178 +1,1384 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgenticFlow AI | Autonomous Engineering Ecosystem</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #050505; color: #ffffff; font-family: 'Inter', sans-serif; }
-        .glow-text { background: linear-gradient(90deg, #3b82f6, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card-blur { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); transition: all 0.3s ease; }
-        .card-blur:hover { border-color: rgba(255, 255, 255, 0.2); transform: translateY(-3px); }
-        .hidden { display: none !important; }
-        #registerModal { transition: opacity 0.3s ease-in-out; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgenticFlow AI — Zero-Touch Autonomous Engineering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050810;
+    --bg2: #090d1a;
+    --surface: #0d1426;
+    --surface2: #111930;
+    --border: #1e2d50;
+    --accent: #00e5ff;
+    --accent2: #7b2fff;
+    --accent3: #ff6b35;
+    --text: #e8eeff;
+    --text-muted: #6b7a99;
+    --text-dim: #3a4560;
+    --green: #00ff88;
+    --red: #ff3d71;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(0,229,255,0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+  }
+
+  /* Grid overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.022) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 60px;
+    border-bottom: 1px solid rgba(30,45,80,0.6);
+    background: rgba(5,8,16,0.85);
+    backdrop-filter: blur(20px);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--text);
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 40px; align-items: center; }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 10px 24px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .nav-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--accent);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: -1;
+  }
+  .nav-cta:hover { color: var(--bg); }
+  .nav-cta:hover::before { transform: translateX(0); }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 140px 60px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    top: -200px; right: -150px;
+    background: radial-gradient(circle, rgba(123,47,255,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-glow2 {
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    bottom: -100px; left: -100px;
+    background: radial-gradient(circle, rgba(0,229,255,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--accent);
+  }
+  .hero-headline {
+    font-family: var(--font-display);
+    font-size: clamp(72px, 10vw, 160px);
+    line-height: 0.92;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .hero-headline .line2 {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(232,238,255,0.3);
+  }
+  .hero-headline .accent-word { color: var(--accent); }
+  .hero-sub {
+    max-width: 560px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin: 32px 0 48px;
+    font-weight: 300;
+  }
+  .hero-actions { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  .btn-primary {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px 40px;
+    background: var(--accent);
+    color: var(--bg);
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .btn-primary:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,229,255,0.3); }
+  .btn-ghost {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px 40px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--text-muted); color: var(--text); }
+  .hero-stats {
+    display: flex; gap: 60px;
+    margin-top: 80px;
+    padding-top: 48px;
+    border-top: 1px solid var(--border);
+  }
+  .stat-item {}
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 52px;
+    letter-spacing: 2px;
+    color: var(--text);
+    line-height: 1;
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* ─── SECTION COMMON ─── */
+  section { position: relative; z-index: 1; }
+  .section-header {
+    margin-bottom: 80px;
+  }
+  .section-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-tag::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--accent2); }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(44px, 6vw, 80px);
+    letter-spacing: 2px;
+    line-height: 0.95;
+    color: var(--text);
+  }
+  .section-title .ghost { color: transparent; -webkit-text-stroke: 1px var(--border); }
+
+  /* ─── AGENTS ─── */
+  #ecosystem {
+    padding: 120px 60px;
+    background: var(--bg2);
+  }
+  .agents-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .agent-card {
+    background: var(--surface);
+    padding: 48px 40px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .agent-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--card-accent, var(--accent));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  .agent-card:hover::before { transform: scaleX(1); }
+  .agent-card:hover { background: var(--surface2); transform: translateY(-4px); }
+  .agent-card.architect { --card-accent: var(--accent); }
+  .agent-card.optimizer { --card-accent: var(--accent2); }
+  .agent-card.security { --card-accent: var(--accent3); }
+  .agent-number {
+    font-family: var(--font-display);
+    font-size: 100px;
+    line-height: 1;
+    color: var(--text-dim);
+    position: absolute;
+    top: 20px; right: 24px;
+    pointer-events: none;
+  }
+  .agent-icon {
+    width: 48px; height: 48px;
+    margin-bottom: 28px;
+    position: relative; z-index: 1;
+  }
+  .agent-icon svg { width: 100%; height: 100%; }
+  .agent-role {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--card-accent, var(--accent));
+    margin-bottom: 12px;
+  }
+  .agent-name {
+    font-family: var(--font-display);
+    font-size: 36px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+  .agent-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+  .agent-features {
+    margin-top: 28px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .agent-feat {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .agent-feat::before {
+    content: '→';
+    color: var(--card-accent, var(--accent));
+  }
+
+  /* ─── TERMINAL ─── */
+  #demo {
+    padding: 120px 60px;
+    background: var(--bg);
+  }
+  .terminal-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .terminal-left {}
+  .terminal-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot.red { background: var(--red); }
+  .dot.yellow { background: #ffcc00; }
+  .dot.green { background: var(--green); }
+  .terminal-window {
+    background: #02040c;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .terminal-bar {
+    background: #0a0e1a;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .terminal-body {
+    padding: 24px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.8;
+    min-height: 380px;
+    overflow-y: auto;
+  }
+  .t-line { display: flex; gap: 10px; }
+  .t-prompt { color: var(--accent); flex-shrink: 0; }
+  .t-text { color: #8899bb; }
+  .t-success { color: var(--green); }
+  .t-warning { color: #ffcc00; }
+  .t-info { color: var(--accent); }
+  .t-blank { height: 12px; }
+  .t-cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--accent);
+    animation: blink 1s infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+  @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+
+  .terminal-input-area {
+    padding: 20px 24px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 12px; align-items: center;
+  }
+  .terminal-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text);
+    caret-color: var(--accent);
+  }
+  .terminal-input::placeholder { color: var(--text-dim); }
+  .terminal-run {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    cursor: none;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .terminal-run:hover { background: #fff; }
+
+  /* Journey steps */
+  .journey-steps { display: flex; flex-direction: column; gap: 0; }
+  .journey-step {
+    display: flex; gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .journey-step:last-child { border-bottom: none; }
+  .step-num {
+    font-family: var(--font-display);
+    font-size: 48px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    line-height: 1;
+    width: 52px;
+  }
+  .step-content {}
+  .step-title {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .step-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ─── PRICING ─── */
+  #capital {
+    padding: 120px 60px;
+    background: var(--bg2);
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+  .price-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 48px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+  .price-card:hover { transform: translateY(-6px); }
+  .price-card.featured {
+    background: linear-gradient(160deg, #0f1530, #0d1228);
+    border-color: var(--accent2);
+  }
+  .price-card.featured::before {
+    content: 'RECOMMENDED';
+    position: absolute;
+    top: 20px; right: -28px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    background: var(--accent2);
+    color: #fff;
+    padding: 5px 36px;
+    transform: rotate(45deg);
+  }
+  .price-tier {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .price-amount {
+    font-family: var(--font-display);
+    font-size: 72px;
+    letter-spacing: 2px;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .price-amount sup {
+    font-size: 28px;
+    vertical-align: top;
+    margin-top: 12px;
+    display: inline-block;
+    color: var(--text-muted);
+  }
+  .price-period {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 36px;
+  }
+  .price-divider {
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 28px;
+  }
+  .price-features { display: flex; flex-direction: column; gap: 14px; margin-bottom: 40px; }
+  .price-feat {
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex; align-items: flex-start; gap: 10px;
+    line-height: 1.4;
+    font-weight: 300;
+  }
+  .price-feat-icon { color: var(--green); flex-shrink: 0; margin-top: 1px; font-size: 12px; }
+  .price-feat-icon.x { color: var(--text-dim); }
+  .price-btn {
+    display: block; width: 100%;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px;
+    text-align: center;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .price-btn:hover, .price-btn.active {
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+  .price-btn.highlight {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: #fff;
+  }
+  .price-btn.highlight:hover { background: #9d50ff; }
+
+  /* ─── ROADMAP ─── */
+  #roadmap {
+    padding: 120px 60px;
+    background: var(--bg);
+  }
+  .roadmap-track {
+    position: relative;
+    padding-top: 40px;
+  }
+  .roadmap-line {
+    position: absolute;
+    top: 60px;
+    left: 60px; right: 60px;
+    height: 1px;
+    background: var(--border);
+  }
+  .roadmap-progress {
+    position: absolute;
+    top: 60px;
+    left: 60px;
+    width: 10%;
+    height: 1px;
+    background: var(--accent);
+  }
+  .roadmap-years {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  .roadmap-year {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 20px;
+    text-align: center;
+  }
+  .year-dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s;
+  }
+  .roadmap-year.active .year-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 20px rgba(0,229,255,0.5);
+  }
+  .year-label {
+    font-family: var(--font-display);
+    font-size: 32px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+  .roadmap-year.active .year-label { color: var(--accent); }
+  .year-milestone {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+  .year-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    background: rgba(0,229,255,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(0,229,255,0.2);
+    margin-bottom: 12px;
+  }
+
+  /* ─── STACK ─── */
+  #stack {
+    padding: 80px 60px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+  }
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+  .stack-item {
+    background: var(--surface);
+    padding: 32px 20px;
+    text-align: center;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .stack-item:hover { background: var(--surface2); border-color: rgba(0,229,255,0.2); }
+  .stack-icon { font-size: 28px; margin-bottom: 12px; }
+  .stack-name {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+
+  /* ─── FOUNDER ─── */
+  #support {
+    padding: 120px 60px;
+    background: var(--bg);
+  }
+  .founder-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .founder-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 40px;
+    position: relative;
+  }
+  .founder-card::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; right: -2px;
+    width: 60px; height: 60px;
+    border-bottom: 2px solid var(--accent);
+    border-right: 2px solid var(--accent);
+  }
+  .founder-avatar {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border-radius: 50%;
+    margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 32px;
+    color: white;
+    letter-spacing: 2px;
+  }
+  .founder-name {
+    font-family: var(--font-display);
+    font-size: 32px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .founder-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .founder-quote {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-muted);
+    font-style: italic;
+    font-weight: 300;
+  }
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .form-input, .form-textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    cursor: none;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--accent2); }
+  .form-textarea { resize: vertical; min-height: 120px; }
+  .form-submit {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 16px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    color: #fff;
+    border: none;
+    cursor: none;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .form-submit:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 60px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 24px;
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 4px;
+    color: var(--text);
+  }
+  .footer-logo span { color: var(--accent); }
+  .footer-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-align: right;
+  }
+  .footer-links { display: flex; gap: 32px; }
+  .footer-links a {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.7s ease both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+  .scanline {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,229,255,0.06), transparent);
+    animation: scanline 8s linear infinite;
+    pointer-events: none;
+    z-index: 200;
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    #hero { padding: 120px 24px 60px; }
+    .hero-stats { gap: 32px; flex-wrap: wrap; }
+    #ecosystem, #demo, #capital, #roadmap, #stack, #support { padding: 80px 24px; }
+    .agents-grid, .pricing-grid { grid-template-columns: 1fr; }
+    .terminal-wrap { grid-template-columns: 1fr; }
+    .roadmap-years { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .roadmap-line, .roadmap-progress { display: none; }
+    .stack-grid { grid-template-columns: repeat(3, 1fr); }
+    .founder-grid { grid-template-columns: 1fr; gap: 40px; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; text-align: center; }
+    .footer-meta { text-align: center; }
+  }
+</style>
 </head>
-<body class="flex flex-col min-h-screen selection:bg-purple-500/30">
+<body>
 
-    <header class="sticky top-0 z-50 p-4 border-b border-gray-900 bg-black/80 backdrop-blur-lg">
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <h1 class="text-xl font-bold glow-text tracking-widest uppercase cursor-pointer" onclick="navigateTo('hero')">AgenticFlow AI</h1>
-            <nav class="hidden md:flex gap-6 text-sm text-gray-400 font-medium">
-                <a href="#" class="hover:text-white transition-colors" onclick="navigateTo('features')">Features</a>
-                <a href="#" class="hover:text-white transition-colors" onclick="navigateTo('demo')">Demo</a>
-                <a href="#" class="hover:text-white transition-colors" onclick="navigateTo('pricing')">Pricing</a>
-                <a href="#" class="hover:text-white transition-colors" onclick="navigateTo('community')">Community</a>
-            </nav>
-            <div class="flex gap-2">
-                <button class="bg-white text-black px-5 py-2 rounded-full text-xs font-bold hover:scale-105 transition-all" onclick="openModal()">Get Started Free</button>
-            </div>
-        </div>
-    </header>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="scanline"></div>
 
-    <div id="main-content" class="flex-grow">
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">AGENTIC<span>FLOW</span></div>
+  <div class="nav-links">
+    <a href="#hero">Home</a>
+    <a href="#ecosystem">Ecosystem</a>
+    <a href="#demo">Live Demo</a>
+    <a href="#capital">Pricing</a>
+    <a href="#support">Founder's Desk</a>
+  </div>
+  <a href="#capital" class="nav-cta">Get Access</a>
+</nav>
 
-        <main id="hero-section" class="flex flex-col items-center justify-center text-center px-6 py-24 md:py-32">
-            <div class="animate-pulse w-2.5 h-2.5 bg-blue-500 rounded-full mb-8 shadow-[0_0_15px_#3b82f6]"></div>
-            <h2 class="text-6xl md:text-9xl font-black mb-10 leading-tight tracking-tighter">
-                Zero-Touch <br><span class="glow-text">AI Engineering.</span>
-            </h2>
-            <p class="max-w-2xl text-gray-500 text-lg md:text-xl mb-14 font-light leading-relaxed">
-                The world's first autonomous multi-agent orchestration engine for the AWS ecosystem. We handle abstract requirements to production deployment. No humans. No friction. Just Flow.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-5 w-full justify-center">
-                <button class="bg-white text-black px-12 py-4 rounded-xl font-bold hover:scale-105 transition-all text-lg" onclick="openModal()">Start Your Pipeline</button>
-                <button class="card-blur px-12 py-4 rounded-xl font-bold hover:bg-white/5 transition-all text-gray-300 text-lg">Download Technical Docs</button>
-            </div>
-        </div>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-tag fade-up">AWS-Native · Multi-Agent · Production-Grade</div>
+  <h1 class="hero-headline fade-up delay-1">
+    ZERO<br>
+    <span class="line2">TOUCH</span><br>
+    <span class="accent-word">ENGINEERING</span>
+  </h1>
+  <p class="hero-sub fade-up delay-2">
+    AgenticFlow is the world's first autonomous software engineering platform.
+    Describe your vision. Our AI agents architect, code, secure, and deploy —
+    eliminating 90% of human engineering effort.
+  </p>
+  <div class="hero-actions fade-up delay-3">
+    <a href="#demo" class="btn-primary">View Live Demo</a>
+    <a href="#ecosystem" class="btn-ghost">Explore Agents</a>
+  </div>
+  <div class="hero-stats fade-up delay-4">
+    <div class="stat-item">
+      <div class="stat-num">90<span>%</span></div>
+      <div class="stat-label">Effort Eliminated</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Autonomous Agents</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">1<span>-click</span></div>
+      <div class="stat-label">AWS Deployment</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Scale Capacity</div>
+    </div>
+  </div>
+</section>
 
-        <section id="features-section" class="hidden max-w-7xl mx-auto px-6 py-20">
-            <h2 class="text-5xl font-extrabold mb-16 tracking-tight text-center">Autonomous capacidades.</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="card-blur p-10 rounded-2xl flex flex-col gap-4 text-center">
-                    <span class="text-4xl">🤖Orchestration</span>
-                    <h3 class="text-xl font-bold glow-text">Bedrock Native</h3>
-                    <p class="text-gray-400 text-sm">Autonomous orchestration of Claude 3.5 Sonnet and Llama 3 models within AWS security boundaries. Specific IAM control for safe execution.</p>
-                </div>
-                <div class="card-blur p-10 rounded-2xl flex flex-col gap-4 text-center">
-                    <span class="text-4xl">⚡️Automation</span>
-                    <h3 class="text-xl font-bold glow-text">End-to-End CI/CD</h3>
-                    <p class="text-gray-400 text-sm">Agents monitor the entire code lifecycle. Bugs are isolated, fixed, and auto-generated as pull requests without human developer intervention.</p>
-                </div>
-                <div class="card-blur p-10 rounded-2xl flex flex-col gap-4 text-center">
-                    <span class="text-4xl">🏗️Scalability</span>
-                    <h3 class="text-xl font-bold glow-text">Cloud-Native Execution</h3>
-                    <p class="text-gray-400 text-sm">Define your architecture and the system automatically provisions Lambda functions and Fargate containers with infrastructure-as-code principles.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="demo-section" class="hidden max-w-5xl mx-auto px-6 py-20">
-            <h2 class="text-5xl font-extrabold mb-16 tracking-tight text-center">Simulated Agent Output.</h2>
-            <div class="card-blur p-6 rounded-2xl font-mono text-xs md:text-sm">
-                <div class="flex gap-2 border-b border-gray-800 pb-3 mb-4">
-                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-                    <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                </div>
-                <div class="text-gray-500 space-y-1.5">
-                    <p class="text-gray-300">$ Requirement: "Build a serverless user authentication system."</p>
-                    <p class="text-blue-400">> Loading Amazon Bedrock orchestration configs...</p>
-                    <p>> Spawning Architect Agent...</p>
-                    <p>... Architect Agent: Defining IAM policies for Lambda + DynamoDB...</p>
-                    <p>... Architect Agent: Creating Users table in DynamoDB (Schema set)...</p>
-                    <p class="text-purple-400">> Spawning Optimizer Agent...</p>
-                    <p>... Optimizer Agent: Generated Python signup function (using boto3)...</p>
-                    <p class="text-green-400">> Fixing Error: Optimizer isolated issue in login loop (Fixed)...</p>
-                    <p>> Automated Deployment Initiated via AWS CloudFormation...</p>
-                    <p class="text-gray-300">> SUCCESS: Zero-Touch Pipeline is Optimal.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="pricing-section" class="hidden max-w-6xl mx-auto px-6 py-20">
-            <h2 class="text-5xl font-extrabold mb-16 tracking-tight text-center">Transparency First.</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="card-blur p-8 rounded-2xl flex flex-col justify-between">
-                    <div>
-                        <h4 class="text-gray-400 mb-2 uppercase text-xs tracking-widest">Private Alpha</h4>
-                        <p class="text-5xl font-extrabold mb-8">$0<span class="text-sm font-medium text-gray-500">/mo</span></p>
-                        <ul class="text-gray-400 text-sm space-y-3 mb-10"><li>• 1 Autonomous Agent</li><li>• Basic Bedrock Access</li><li>• Lambda Deploy Support</li></ul>
-                    </div>
-                    <button class="w-full card-blur px-8 py-3 rounded-lg hover:bg-white/5 transition-all text-xs" onclick="openModal()">Join Waitlist</button>
-                </div>
-                <div class="card-blur p-8 rounded-2xl flex flex-col justify-between border-2 border-purple-800">
-                    <div>
-                        <span class="bg-purple-900/30 text-purple-400 px-3 py-0.5 rounded-full text-xs font-medium mb-4 inline-block">MOST POPULAR</span>
-                        <h4 class="text-gray-400 mb-2 uppercase text-xs tracking-widest">Startup Pro</h4>
-                        <p class="text-5xl font-extrabold mb-8">$99<span class="text-sm font-medium text-gray-500">/mo</span></p>
-                        <ul class="text-gray-400 text-sm space-y-3 mb-10"><li>• 5 Autonomous Agents</li><li>• Advanced model Orchestration</li><li>• CI/CD Pipeline Monitoring</li><li>• DynamoDB Native Support</li></ul>
-                    </div>
-                    <button class="w-full bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold transition-all hover:scale-105" onclick="openModal()">Get Started Free</button>
-                </div>
-                <div class="card-blur p-8 rounded-2xl flex flex-col justify-between">
-                    <div>
-                        <h4 class="text-gray-400 mb-2 uppercase text-xs tracking-widest">Enterprise</h4>
-                        <p class="text-5xl font-extrabold mb-8">Custom</p>
-                        <ul class="text-gray-400 text-sm space-y-3 mb-10"><li>• Unlimited Agents</li><li>• Dedicated Bedrock Compute</li><li>• On-Prem Deployment</li><li>• White-Glove Support</li></ul>
-                    </div>
-                    <button class="w-full card-blur px-8 py-3 rounded-lg hover:bg-white/5 transition-all text-xs">Contact Sales</button>
-                </div>
-            </div>
-        </section>
-
-        <section id="community-section" class="hidden max-w-7xl mx-auto px-6 py-20">
-            <h2 class="text-5xl font-extrabold mb-16 tracking-tight text-center">Ecosystem Support.</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
-                <div class="card-blur p-10 rounded-2xl">
-                    <h3 class="text-xl font-bold mb-4">Help Center</h3>
-                    <p class="text-gray-400 mb-8 text-sm">Comprehensive documentation on setting up autonomous agents and integrating AWS ecosystem securely.</p>
-                    <a href="#" class="text-blue-400 text-xs hover:underline">View Documentation -></a>
-                </div>
-                <div class="card-blur p-10 rounded-2xl">
-                    <h3 class="text-xl font-bold mb-4">Feedback Loop</h3>
-                    <p class="text-gray-400 mb-8 text-sm">Help us optimize the orchestrator agent. Share your feature requests or bug reports directly.</p>
-                    <button class="bg-white/10 text-white px-6 py-2 rounded-lg text-xs hover:bg-white/15 transition-all">Submit Feedback</button>
-                </div>
-            </div>
-        </section>
-
+<!-- ECOSYSTEM -->
+<section id="ecosystem">
+  <div class="section-header">
+    <div class="section-tag">Intelligence Suite</div>
+    <h2 class="section-title">THE AGENTIC<br><span class="ghost">BRAIN</span></h2>
+  </div>
+  <div class="agents-grid">
+    <!-- Architect -->
+    <div class="agent-card architect">
+      <div class="agent-number">01</div>
+      <div class="agent-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="4" width="18" height="18" stroke="#00e5ff" stroke-width="1.5"/>
+          <rect x="26" y="4" width="18" height="18" stroke="#00e5ff" stroke-width="1.5" opacity="0.4"/>
+          <rect x="4" y="26" width="18" height="18" stroke="#00e5ff" stroke-width="1.5" opacity="0.4"/>
+          <rect x="26" y="26" width="18" height="18" stroke="#00e5ff" stroke-width="1.5" opacity="0.4"/>
+          <line x1="13" y1="4" x2="13" y2="22" stroke="#00e5ff" stroke-width="0.5" opacity="0.3"/>
+          <line x1="4" y1="13" x2="22" y2="13" stroke="#00e5ff" stroke-width="0.5" opacity="0.3"/>
+        </svg>
+      </div>
+      <div class="agent-role">The Thinker</div>
+      <div class="agent-name">ARCHITECT<br>AGENT</div>
+      <div class="agent-desc">Analyzes natural language requirements and translates them into production-ready Infrastructure-as-Code and system architecture maps.</div>
+      <div class="agent-features">
+        <div class="agent-feat">Terraform & CloudFormation generation</div>
+        <div class="agent-feat">Lambda · S3 · DynamoDB topology design</div>
+        <div class="agent-feat">Multi-service connection mapping</div>
+      </div>
     </div>
 
-    <div id="registerModal" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/90 opacity-0 hidden">
-        <div class="card-blur p-10 rounded-3xl max-w-sm w-full relative">
-            <button class="absolute top-6 right-6 text-gray-600 hover:text-white" onclick="closeModal()">X</button>
-            <h3 class="text-2xl font-extrabold mb-2 glow-text tracking-tight">Access the Future.</h3>
-            <p class="text-gray-500 mb-8 text-xs">Create your free "Startup Pro" test account.</p>
-            <form class="space-y-4" onsubmit="event.preventDefault(); closeModal();">
-                <input type="text" placeholder="Startup Name (e.g. AgenticFlow AI)" class="w-full bg-transparent border border-gray-800 p-3 rounded-lg text-sm focus:border-purple-600 outline-none">
-                <input type="email" placeholder="Professional Email (e.g. founder@agenticflow.ai)" class="w-full bg-transparent border border-gray-800 p-3 rounded-lg text-sm focus:border-purple-600 outline-none">
-                <div class="flex items-center gap-2 pt-2">
-                    <input type="checkbox" id="terms" class="accent-purple-600">
-                    <label for="terms" class="text-xs text-gray-500">I agree to Alpha access and security agreements.</label>
-                </div>
-                <button type="submit" class="w-full bg-white text-black py-3 rounded-lg font-bold hover:scale-105 transition-all mt-6 text-sm">Create Alpha Account</button>
-            </form>
-        </div>
+    <!-- Optimizer -->
+    <div class="agent-card optimizer">
+      <div class="agent-number">02</div>
+      <div class="agent-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="4,36 16,20 24,28 36,8 44,16" stroke="#7b2fff" stroke-width="1.5" fill="none"/>
+          <circle cx="44" cy="16" r="3" fill="#7b2fff"/>
+          <line x1="4" y1="44" x2="44" y2="44" stroke="#7b2fff" stroke-width="0.5" opacity="0.3"/>
+          <line x1="4" y1="4" x2="4" y2="44" stroke="#7b2fff" stroke-width="0.5" opacity="0.3"/>
+        </svg>
+      </div>
+      <div class="agent-role">The Coder</div>
+      <div class="agent-name">OPTIMIZER<br>AGENT</div>
+      <div class="agent-desc">Generates high-fidelity production code in Python and Node.js with built-in self-healing capabilities that auto-fix deployment errors.</div>
+      <div class="agent-features">
+        <div class="agent-feat">Python & Node.js code synthesis</div>
+        <div class="agent-feat">Self-healing: auto-detects & fixes bugs</div>
+        <div class="agent-feat">Auto Pull Request generation</div>
+      </div>
     </div>
 
-    <footer class="p-10 border-t border-gray-900 bg-black/50 text-center">
-        <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 text-sm text-gray-500 font-medium">
-            <a href="#" class="hover:text-white" onclick="navigateTo('community')">Help Center</a>
-            <a href="#" class="hover:text-white" onclick="navigateTo('community')">Feedback</a>
-            <a href="#" class="hover:text-white">Discord</a>
-            <a href="#" class="hover:text-white">X/Twitter</a>
-        </div>
-        <p class="text-[10px] text-gray-700 uppercase tracking-[0.2em]">&copy; 2026 AgenticFlow AI &bull; Built for the Future &bull; Powered by AWS</p>
-    </footer>
+    <!-- Security -->
+    <div class="agent-card security">
+      <div class="agent-number">03</div>
+      <div class="agent-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24 4 L42 12 L42 24 C42 34 34 42 24 46 C14 42 6 34 6 24 L6 12 Z" stroke="#ff6b35" stroke-width="1.5" fill="none"/>
+          <path d="M24 10 L36 16 L36 24 C36 30 31 36 24 38 C17 36 12 30 12 24 L12 16 Z" stroke="#ff6b35" stroke-width="0.5" opacity="0.4" fill="none"/>
+          <path d="M18 24 L22 28 L30 20" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="agent-role">The Guard</div>
+      <div class="agent-name">SECURITY<br>AGENT</div>
+      <div class="agent-desc">Real-time auditing of IAM roles and KMS encryption layers. Zero-leak security enforcement across your entire AWS infrastructure surface.</div>
+      <div class="agent-features">
+        <div class="agent-feat">IAM Role monitoring & enforcement</div>
+        <div class="agent-feat">KMS data encryption validation</div>
+        <div class="agent-feat">CloudWatch anomaly detection</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script>
-        const pages = {'hero': 'hero-section','features': 'features-section','demo': 'demo-section','pricing': 'pricing-section','community': 'community-section'};
-        function navigateTo(pageName) { if (!pages[pageName]) return; Object.values(pages).forEach(sectionId => { document.getElementById(sectionId).classList.add('hidden'); }); document.getElementById(pages[pageName]).classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-        const modal = document.getElementById('registerModal');
-        function openModal() { modal.classList.remove('hidden'); setTimeout(() => { modal.style.opacity = '1'; }, 10); }
-        function closeModal() { modal.style.opacity = '0'; setTimeout(() => { modal.classList.add('hidden'); }, 300); }
-    </script>
+<!-- LIVE DEMO -->
+<section id="demo">
+  <div class="section-header">
+    <div class="section-tag" style="--c:var(--green)">Terminal Simulation</div>
+    <h2 class="section-title">CHAIN OF<br><span class="ghost">THOUGHT</span></h2>
+  </div>
+  <div class="terminal-wrap">
+    <div>
+      <div class="terminal-label">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        AgenticFlow · Live Console
+      </div>
+      <div class="terminal-window">
+        <div class="terminal-bar">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
+        <div class="terminal-body" id="termBody">
+          <div class="t-line"><span class="t-prompt">$</span><span class="t-text">agenticflow init --project "E-Commerce Platform"</span></div>
+          <div class="t-blank"></div>
+          <div class="t-line"><span class="t-info">◈ ARCHITECT AGENT — Analyzing requirements...</span></div>
+          <div class="t-line"><span class="t-text">  → Parsing natural language input</span></div>
+          <div class="t-line"><span class="t-text">  → Identifying microservice boundaries</span></div>
+          <div class="t-line"><span class="t-success">  ✓ Architecture map generated (14 services)</span></div>
+          <div class="t-blank"></div>
+          <div class="t-line"><span class="t-info">◈ ARCHITECT AGENT — Generating IaC...</span></div>
+          <div class="t-line"><span class="t-text">  → Writing Terraform: Lambda + API Gateway</span></div>
+          <div class="t-line"><span class="t-text">  → Configuring DynamoDB table schemas</span></div>
+          <div class="t-line"><span class="t-text">  → Provisioning S3 buckets (3 regions)</span></div>
+          <div class="t-line"><span class="t-success">  ✓ terraform.plan validated — no drift detected</span></div>
+          <div class="t-blank"></div>
+          <div class="t-line"><span class="t-info">◈ OPTIMIZER AGENT — Code synthesis in progress...</span></div>
+          <div class="t-line"><span class="t-text">  → Generating Python Lambda handlers</span></div>
+          <div class="t-line"><span class="t-text">  → Writing Node.js API layer</span></div>
+          <div class="t-line"><span class="t-text">  → Running unit test suite</span></div>
+          <div class="t-line"><span class="t-success">  ✓ 94 tests passed · 0 failed</span></div>
+          <div class="t-blank"></div>
+          <div class="t-line"><span class="t-info">◈ SECURITY AGENT — Audit sweep...</span></div>
+          <div class="t-line"><span class="t-text">  → IAM role least-privilege enforcement</span></div>
+          <div class="t-line"><span class="t-text">  → KMS encryption keys validated</span></div>
+          <div class="t-line"><span class="t-success">  ✓ Zero vulnerabilities detected</span></div>
+          <div class="t-blank"></div>
+          <div class="t-line"><span class="t-info">◈ Sandbox URL ready →</span><span class="t-success"> https://preview.agenticflow.io/sb-7f2c</span></div>
+          <div class="t-line"><span class="t-success">✓ DEPLOYMENT READY — Run `agenticflow deploy --prod` to go live</span></div>
+          <div class="t-blank"></div>
+          <div class="t-line"><span class="t-prompt">$</span><span class="t-cursor"></span></div>
+        </div>
+        <div class="terminal-input-area">
+          <span class="t-prompt" style="color:var(--accent);font-family:var(--font-mono);font-size:12px;">$</span>
+          <input class="terminal-input" id="termInput" type="text" placeholder="Enter your project vision...">
+          <button class="terminal-run" onclick="runTerminal()">RUN</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="terminal-label" style="margin-bottom:8px;">User Journey</div>
+      <div class="journey-steps">
+        <div class="journey-step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">Onboarding</div>
+            <div class="step-desc">Secure signup via LinkedIn or Professional Email verification.</div>
+          </div>
+        </div>
+        <div class="journey-step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">Vision Input</div>
+            <div class="step-desc">Enter your project idea in natural language. No technical specs required.</div>
+          </div>
+        </div>
+        <div class="journey-step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">Autonomous Orchestration</div>
+            <div class="step-desc">AgenticFlow triggers the multi-agent workflow. Watch the chain of thought in real-time.</div>
+          </div>
+        </div>
+        <div class="journey-step">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <div class="step-title">Live Preview</div>
+            <div class="step-desc">System generates a temporary sandbox URL for you to test and validate the prototype.</div>
+          </div>
+        </div>
+        <div class="journey-step">
+          <div class="step-num">05</div>
+          <div class="step-content">
+            <div class="step-title">Deploy to AWS</div>
+            <div class="step-desc">One-click pushes the full ecosystem to your live production environment.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="capital">
+  <div class="section-header">
+    <div class="section-tag">Access Tiers</div>
+    <h2 class="section-title">CAPITAL<br><span class="ghost">TIERS</span></h2>
+  </div>
+  <div class="pricing-grid">
+    <!-- Alpha -->
+    <div class="price-card">
+      <div class="price-tier">Alpha Access</div>
+      <div class="price-amount"><sup>$</sup>0</div>
+      <div class="price-period">Free Forever · Limited Capacity</div>
+      <div class="price-divider"></div>
+      <div class="price-features">
+        <div class="price-feat"><span class="price-feat-icon">✓</span> 1 active project</div>
+        <div class="price-feat"><span class="price-feat-icon">✓</span> Architect Agent access</div>
+        <div class="price-feat"><span class="price-feat-icon">✓</span> Sandbox environment only</div>
+        <div class="price-feat"><span class="price-feat-icon x">✗</span> Production deployment</div>
+        <div class="price-feat"><span class="price-feat-icon x">✗</span> Security Agent</div>
+        <div class="price-feat"><span class="price-feat-icon x">✗</span> Self-Healing Code</div>
+      </div>
+      <a href="#" class="price-btn">Join Alpha Waitlist</a>
+    </div>
+
+    <!-- CEO Vision -->
+    <div class="price-card featured">
+      <div class="price-tier">CEO Vision</div>
+      <div class="price-amount"><sup>$</sup>999</div>
+      <div class="price-period">Per Month · Full Autonomy</div>
+      <div class="price-divider"></div>
+      <div class="price-features">
+        <div class="price-feat"><span class="price-feat-icon">✓</span> Unlimited projects</div>
+        <div class="price-feat"><span class="price-feat-icon">✓</span> All 3 Agents activated</div>
+        <div class="price-feat"><span class="price-feat-icon">✓</span> One-click AWS deployment</div>
+        <div class="price-feat"><span class="price-feat-icon">✓</span> Self-Healing Code™</div>
+        <div class="price-feat"><span class="price-feat-icon">✓</span> Real-time Security Audit</div>
+        <div class="price-feat"><span class="price-feat-icon">✓</span> Direct founder access</div>
+      </div>
+      <a href="#" class="price-btn highlight">Activate CEO Vision</a>
+    </div>
+
+    <!-- Enterprise -->
+    <div class="price-card">
+      <div class="price-tier">Enterprise</div>
+      <div class="price-amount">Custom</div>
+      <div class="price-period">Annual Contract · White-Glove</div>
+      <div class="price-divider"></div>
+      <div class="price-features">
+        <div class="price-feat"><span class="price-feat-icon">✓</span> Private cloud deployment</div>
+        <div class="price-feat"><span class="price-feat-icon">✓</span> Custom agent modules</div>
+        <div class="price-feat"><span class="price-feat-icon">✓</span> SLA guarantees</div>
+        <div class="price-feat"><span class="price-feat-icon">✓</span> Dedicated infrastructure</div>
+        <div class="price-feat"><span class="price-feat-icon">✓</span> Compliance & audit reports</div>
+        <div class="price-feat"><span class="price-feat-icon">✓</span> 24/7 engineering support</div>
+      </div>
+      <a href="#support" class="price-btn">Contact Founder</a>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="section-header">
+    <div class="section-tag">5-Year Vision</div>
+    <h2 class="section-title">STRATEGIC<br><span class="ghost">ROADMAP</span></h2>
+  </div>
+  <div class="roadmap-track">
+    <div class="roadmap-line"></div>
+    <div class="roadmap-progress"></div>
+    <div class="roadmap-years">
+      <div class="roadmap-year active">
+        <div class="year-dot"></div>
+        <div class="year-badge">NOW</div>
+        <div class="year-label">Y1</div>
+        <div class="year-milestone">Private Alpha Launch. $10K credit utilization. LLM fine-tuning on Amazon Bedrock.</div>
+      </div>
+      <div class="roadmap-year">
+        <div class="year-dot"></div>
+        <div class="year-badge">2026</div>
+        <div class="year-label">Y2</div>
+        <div class="year-milestone">Multi-cloud integration. Azure and Google Cloud parity alongside AWS.</div>
+      </div>
+      <div class="roadmap-year">
+        <div class="year-dot"></div>
+        <div class="year-badge">2027</div>
+        <div class="year-label">Y3</div>
+        <div class="year-milestone">Launch of the Agentic Marketplace — third-party developer agent modules.</div>
+      </div>
+      <div class="roadmap-year">
+        <div class="year-dot"></div>
+        <div class="year-badge">2028</div>
+        <div class="year-label">Y4</div>
+        <div class="year-milestone">Autonomous DevOps expansion and AI-driven Cyber-Security suite.</div>
+      </div>
+      <div class="roadmap-year">
+        <div class="year-dot"></div>
+        <div class="year-badge">2029</div>
+        <div class="year-label">Y5</div>
+        <div class="year-milestone">AgenticFlow established as the global OS for AI-driven startups worldwide.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="section-header" style="margin-bottom:0">
+    <div class="section-tag">Technical Infrastructure</div>
+  </div>
+  <div class="stack-grid">
+    <div class="stack-item">
+      <div class="stack-icon">⚡</div>
+      <div class="stack-name">AWS Lambda</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-icon">🗄️</div>
+      <div class="stack-name">DynamoDB</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-icon">🪣</div>
+      <div class="stack-name">Amazon S3</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-icon">🧠</div>
+      <div class="stack-name">Bedrock AI</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-icon">🔐</div>
+      <div class="stack-name">AWS KMS</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-icon">👁️</div>
+      <div class="stack-name">CloudWatch</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER'S DESK -->
+<section id="support">
+  <div class="section-header">
+    <div class="section-tag">Founder's Desk</div>
+    <h2 class="section-title">DIRECT<br><span class="ghost">CHANNEL</span></h2>
+  </div>
+  <div class="founder-grid">
+    <div>
+      <div class="founder-card">
+        <div class="founder-avatar">AP</div>
+        <div class="founder-name">AJU PRADHANI</div>
+        <div class="founder-title">Founder & Architect · AgenticFlow AI</div>
+        <div class="founder-quote">
+          "The next decade belongs to founders who remove themselves as bottlenecks. AgenticFlow is not a tool — it is an autonomous engineering partner that scales with your ambition."
+        </div>
+      </div>
+      <div style="margin-top:24px; display:flex; flex-direction:column; gap:12px;">
+        <a href="#" style="display:flex;align-items:center;gap:12px;text-decoration:none;padding:16px;background:var(--surface);border:1px solid var(--border);">
+          <span style="color:var(--accent);font-family:var(--font-mono);font-size:11px;">→ WHITEPAPER: The Agentic Engineering Manifesto</span>
+        </a>
+        <a href="#" style="display:flex;align-items:center;gap:12px;text-decoration:none;padding:16px;background:var(--surface);border:1px solid var(--border);">
+          <span style="color:var(--accent);font-family:var(--font-mono);font-size:11px;">→ REPORT: AWS Multi-Agent Architecture Patterns</span>
+        </a>
+        <a href="#" style="display:flex;align-items:center;gap:12px;text-decoration:none;padding:16px;background:var(--surface);border:1px solid var(--border);">
+          <span style="color:var(--accent);font-family:var(--font-mono);font-size:11px;">→ CASE STUDY: Zero-Touch SaaS in 48 Hours</span>
+        </a>
+      </div>
+    </div>
+    <div>
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input class="form-input" type="text" placeholder="Your full name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Company</label>
+            <input class="form-input" type="text" placeholder="Organization">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Professional Email</label>
+          <input class="form-input" type="email" placeholder="you@company.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your Vision</label>
+          <textarea class="form-textarea" placeholder="Describe the product or platform you want AgenticFlow to build for you..."></textarea>
+        </div>
+        <button class="form-submit">Send to Founder's Desk →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">AGENTIC<span>FLOW</span></div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Security</a>
+    <a href="#">Status</a>
+  </div>
+  <div class="footer-meta">
+    © 2025 AgenticFlow AI · Built on AWS<br>
+    Founder: Aju Pradhani
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 6 + 'px';
+    cursor.style.top = my - 6 + 'px';
+  });
+  function animRing() {
+    rx += (mx - rx - 18) * 0.12;
+    ry += (my - ry - 18) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+  document.querySelectorAll('a, button, input, textarea').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'scale(2)';
+      ring.style.transform = 'scale(1.5)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'scale(1)';
+      ring.style.transform = 'scale(1)';
+    });
+  });
+
+  // Terminal demo
+  const terminalLines = [
+    { type: 'prompt', text: 'agenticflow init --project "{INPUT}"' },
+    { type: 'blank' },
+    { type: 'info', text: '◈ ARCHITECT AGENT — Analyzing requirements...' },
+    { type: 'text', text: '  → Parsing natural language input' },
+    { type: 'text', text: '  → Generating system topology' },
+    { type: 'success', text: '  ✓ Architecture map generated' },
+    { type: 'blank' },
+    { type: 'info', text: '◈ OPTIMIZER AGENT — Code synthesis...' },
+    { type: 'text', text: '  → Writing Lambda handlers (Python)' },
+    { type: 'text', text: '  → Generating API layer (Node.js)' },
+    { type: 'success', text: '  ✓ All tests passed' },
+    { type: 'blank' },
+    { type: 'info', text: '◈ SECURITY AGENT — Running audit...' },
+    { type: 'text', text: '  → IAM role enforcement active' },
+    { type: 'success', text: '  ✓ Zero vulnerabilities detected' },
+    { type: 'blank' },
+    { type: 'success', text: '✓ Ready to Deploy → agenticflow deploy --prod' },
+  ];
+
+  function runTerminal() {
+    const input = document.getElementById('termInput').value.trim();
+    if (!input) return;
+    const body = document.getElementById('termBody');
+    body.innerHTML = '';
+    let i = 0;
+    function addLine() {
+      if (i >= terminalLines.length) {
+        const cur = document.createElement('div');
+        cur.className = 't-line';
+        cur.innerHTML = '<span class="t-prompt">$</span><span class="t-cursor"></span>';
+        body.appendChild(cur);
+        body.scrollTop = body.scrollHeight;
+        return;
+      }
+      const l = terminalLines[i];
+      const div = document.createElement('div');
+      if (l.type === 'blank') {
+        div.className = 't-blank';
+      } else {
+        div.className = 't-line';
+        const txt = l.text.replace('{INPUT}', input);
+        div.innerHTML = l.type === 'prompt'
+          ? `<span class="t-prompt">$</span><span class="t-text">${txt}</span>`
+          : `<span class="t-${l.type}">${txt}</span>`;
+      }
+      body.appendChild(div);
+      body.scrollTop = body.scrollHeight;
+      i++;
+      setTimeout(addLine, l.type === 'blank' ? 80 : 120);
+    }
+    addLine();
+    document.getElementById('termInput').value = '';
+  }
+
+  document.getElementById('termInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') runTerminal();
+  });
+</script>
 </body>
 </html>
